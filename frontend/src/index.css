@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root { --accent: #6366f1; --accent-h: #4f52d4; }
+
+.theme-dark {
+  --bg-0: #0c0c0c;
+  --bg-1: #141414;
+  --bg-2: #1e1e1e;
+  --bg-3: #282828;
+  --bg-4: #323232;
+  --border: #2a2a2a;
+  --t1: #f2f2f2;
+  --t2: #8a8a8a;
+  --t3: #484848;
+}
+.theme-light {
+  --bg-0: #f0f0f0;
+  --bg-1: #ffffff;
+  --bg-2: #f5f5f5;
+  --bg-3: #ebebeb;
+  --bg-4: #e0e0e0;
+  --border: #e2e2e2;
+  --t1: #111111;
+  --t2: #666666;
+  --t3: #bbbbbb;
+}
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+input, textarea, button { font-family: inherit; }
+
+/* ══ ANIMATIONS ══ */
+
+/* Modal / sheet spring-in */
+@keyframes springIn {
+  0%   { opacity: 0; transform: scale(0.92) translateY(8px); }
+  60%  { opacity: 1; transform: scale(1.02) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.anim-spring {
+  animation: springIn 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Sheet from bottom */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-slide-up {
+  animation: slideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.anim-fade { animation: fadeIn 0.18s ease both; }
+
+/* Message bubble appear */
+@keyframes msgPop {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.anim-msg {
+  animation: msgPop 0.22s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+/* Badge bounce */
+@keyframes badgePop {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+.anim-badge { animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Typing dots */
+@keyframes dotBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%            { transform: translateY(-5px); }
+}
+
+/* Recording pulse */
+@keyframes recPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+}
+.anim-rec-pulse { animation: recPulse 1.2s ease infinite; }
+
+/* Avatar zoom */
+@keyframes avatarZoom {
+  from { opacity: 0; transform: scale(0.3); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.anim-avatar-zoom {
+  animation: avatarZoom 0.3s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+/* Overlay fade */
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.anim-overlay { animation: overlayFade 0.2s ease both; }
+
+/* Context menu pop */
+@keyframes ctxPop {
+  from { opacity: 0; transform: scale(0.85) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.anim-ctx { animation: ctxPop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Shimmer (loading) */
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+/* Live typing cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Button press scale */
+.btn-press { transition: transform 0.1s ease; }
+.btn-press:active { transform: scale(0.92); }
+
+/* Smooth color transitions for theme */
+* { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease; }
+/* Override for things that shouldn't animate */
+img, svg, video, audio { transition: none; }
+.no-transition, .no-transition * { transition: none !important; }
