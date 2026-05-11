@@ -1,157 +1,122 @@
 ================================================================
-  ИНСТРУКЦИЯ ПО ЗАПУСКУ МЕССЕНДЖЕРА "REPA"
-  Стек: FastAPI (Python) + React (TypeScript) + Vite + SQLite
+  ТЕХНИЧЕСКИЙ СТЕК ПРОЕКТА "REPA MESSENGER"
 ================================================================
 
-СТРУКТУРА ПРОЕКТА:
-  backend/   — серверная часть (Python / FastAPI)
-  frontend/  — клиентская часть (React / Vite)
-  Mess/      — эта папка с инструкцией
-
 ================================================================
-  ЧТО НУЖНО УСТАНОВИТЬ ЗАРАНЕЕ
+  BACKEND (серверная часть)
 ================================================================
 
-1. Python 3.12 или новее
-   Скачать: https://www.python.org/downloads/
-   Windows: при установке поставьте галочку "Add Python to PATH"
+Язык:
+  Python 3.12
 
-2. Node.js 18 или новее (включает npm)
-   Скачать: https://nodejs.org/
+Веб-фреймворк:
+  FastAPI 0.136                — REST API + WebSocket-эндпоинты
+  Uvicorn 0.46                 — ASGI-сервер для запуска FastAPI
 
-3. PyCharm (Community или Professional)
-   Скачать: https://www.jetbrains.com/pycharm/download/
+База данных:
+  SQLite                       — файловая БД (файл: backend/messenger.db)
+  SQLAlchemy 2.0               — ORM для работы с БД
 
-================================================================
-  ПЕРВЫЙ ЗАПУСК — УСТАНОВКА ЗАВИСИМОСТЕЙ
-================================================================
+Аутентификация и безопасность:
+  python-jose 3.5 (HS256)      — генерация и проверка JWT-токенов
+  bcrypt 4.0                   — хеширование паролей (прямой вызов без passlib)
+  OAuth2 Password Bearer       — схема авторизации через FastAPI
 
---- BACKEND (выполнить один раз) ---
+WebSocket:
+  FastAPI WebSocket            — встроенная поддержка WS
+  websockets 16.0              — низкоуровневая библиотека
+  ws_manager.py                — собственный менеджер онлайн-соединений
 
-Откройте терминал в папке "backend":
-  PyCharm → правый клик на папку backend → Open In → Terminal
+Файлы и медиа:
+  python-multipart 0.0.26      — загрузка файлов через форм-данные
+  StaticFiles (FastAPI)        — раздача загруженных файлов (/uploads)
 
-# Mac / Linux:
-  python3 -m venv .venv
-  source .venv/bin/activate
-  pip install fastapi uvicorn[standard] sqlalchemy bcrypt python-jose[cryptography] python-multipart websockets
+Роутеры (модули API):
+  /api/auth        — регистрация, логин, токены
+  /api/users       — профили, поиск, аватары
+  /api/messages    — личные сообщения
+  /api/groups      — групповые чаты
+  /api/channels    — каналы
+  /api/wallpapers  — фоны диалогов
 
-# Windows (PowerShell):
-  python -m venv .venv
-  .venv\Scripts\Activate.ps1
-  pip install fastapi uvicorn[standard] sqlalchemy bcrypt python-jose[cryptography] python-multipart websockets
-
-  Если PowerShell запрещает скрипты, выполните сначала:
-  Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-
---- FRONTEND (выполнить один раз) ---
-
-Откройте терминал в папке "frontend":
-  PyCharm → правый клик на папку frontend → Open In → Terminal
-
-# Mac / Linux / Windows:
-  npm install
+Время жизни токена:
+  7 дней (60 * 24 * 7 минут)
 
 ================================================================
-  ЗАПУСК (каждый раз)
+  FRONTEND (клиентская часть)
 ================================================================
 
-Нужно запустить ДВА процесса одновременно — бэкенд и фронтенд.
-Откройте два отдельных терминала в PyCharm:
-  View → Tool Windows → Terminal → "+" (новая вкладка)
+Язык:
+  TypeScript 6.0
 
---- Терминал 1: BACKEND ---
+Фреймворк:
+  React 19                     — UI-библиотека
+  React Router DOM 7           — клиентская маршрутизация (SPA)
 
-# Mac / Linux:
-  cd backend
-  source .venv/bin/activate
-  uvicorn app.main:app --reload
+Сборщик:
+  Vite 8                       — dev-сервер и сборка
 
-# Windows:
-  cd backend
-  .venv\Scripts\Activate.ps1
-  uvicorn app.main:app --reload
+Стили:
+  Tailwind CSS 4               — utility-first CSS-фреймворк
+  @tailwindcss/vite            — интеграция Tailwind с Vite
 
-Бэкенд запустится на: http://127.0.0.1:8000
+HTTP-клиент:
+  Axios 1.15                   — запросы к REST API бэкенда
 
---- Терминал 2: FRONTEND ---
+Утилиты:
+  date-fns 4.1                 — форматирование дат и времени
 
-# Mac / Linux / Windows (команды одинаковые):
-  cd frontend
-  npm run dev
-
-Фронтенд запустится на: http://localhost:5173
-
---- Откройте в браузере ---
-
-  http://localhost:5173
+Линтинг:
+  ESLint 10
+  typescript-eslint
+  eslint-plugin-react-hooks
+  eslint-plugin-react-refresh
 
 ================================================================
-  НАСТРОЙКА PYCHARM (РЕКОМЕНДУЕТСЯ)
+  КОММУНИКАЦИЯ FRONTEND ↔ BACKEND
 ================================================================
 
-Чтобы запускать одной кнопкой через Run Configurations:
+  REST API:    HTTP-запросы через Axios → FastAPI роутеры
+  Реальное время: WebSocket соединение (ws://localhost:8000/ws?token=...)
+  Аутентификация в WS: JWT-токен передаётся как query-параметр
 
-1. Меню: Run → Edit Configurations → "+" → Shell Script
-
-   Конфигурация 1 — Backend:
-     Name: Backend
-     Script path: (укажите полный путь до папки backend)
-     Script text (Mac/Linux):
-       source .venv/bin/activate && uvicorn app.main:app --reload
-     Script text (Windows):
-       .venv\Scripts\activate && uvicorn app.main:app --reload
-     Working directory: <путь до папки backend>
-
-   Конфигурация 2 — Frontend:
-     Name: Frontend
-     Script text: npm run dev
-     Working directory: <путь до папки frontend>
-
-2. Запустите обе конфигурации кнопкой ▶
+  События WebSocket:
+    message          — личное сообщение
+    group_message    — сообщение в группе
+    typing           — индикатор печати
+    live_type        — живой ввод текста (виден собеседнику в реальном времени)
+    read             — отметка о прочтении
+    user_online      — пользователь вошёл в сеть
+    user_offline     — пользователь вышел из сети
+    online_list      — список онлайн при подключении
+    wallpaper_set    — смена фона диалога
 
 ================================================================
-  НАСТРОЙКА ИНТЕРПРЕТАТОРА PYTHON В PYCHARM
+  ВЕРСИИ КЛЮЧЕВЫХ ЗАВИСИМОСТЕЙ
 ================================================================
 
-File → Settings (Mac: PyCharm → Preferences)
-  → Project → Python Interpreter
-  → Add Interpreter → Add Local Interpreter
-  → Existing → выберите файл:
-      Mac/Linux: backend/.venv/bin/python
-      Windows:   backend\.venv\Scripts\python.exe
+  fastapi          0.136.1
+  uvicorn          0.46.0
+  sqlalchemy       2.0.49
+  bcrypt           4.0.1
+  python-jose      3.5.0
+  websockets       16.0
+  python-multipart 0.0.26
+  ----------------
+  react            19.2.5
+  react-router-dom 7.14.2
+  vite             8.0.10
+  tailwindcss      4.2.4
+  axios            1.15.2
+  typescript       6.0.2
+  date-fns         4.1.0
 
 ================================================================
-  ВОЗМОЖНЫЕ ПРОБЛЕМЫ
+  ПОРТЫ ПО УМОЛЧАНИЮ
 ================================================================
 
-Проблема: "uvicorn: command not found" / "uvicorn не распознан"
-Решение:  Убедитесь, что активировали виртуальное окружение (.venv)
-
-Проблема: "npm: command not found"
-Решение:  Установите Node.js с сайта nodejs.org, перезапустите PyCharm
-
-Проблема: Сайт не открывается, хотя оба сервера запущены
-Решение:  Убедитесь, что открываете http://localhost:5173 (не 8000)
-          Порт 8000 — это API, не сайт
-
-Проблема: "Address already in use" / порт занят
-Решение:
-  Mac/Linux: lsof -ti:8000 | xargs kill -9
-             lsof -ti:5173 | xargs kill -9
-  Windows:   netstat -ano | findstr :8000
-             taskkill /PID <номер> /F
-
-Проблема: Ошибка CORS в браузере
-Решение:  Убедитесь, что фронтенд открыт на http://localhost:5173
-          (именно localhost, не 127.0.0.1)
-
-================================================================
-  АДРЕСА ПО УМОЛЧАНИЮ
-================================================================
-
-  Сайт (фронтенд):    http://localhost:5173
-  API  (бэкенд):      http://127.0.0.1:8000
-  Документация API:   http://127.0.0.1:8000/docs
+  Backend API:    http://localhost:8000
+  Frontend:       http://localhost:5173
+  API docs:       http://localhost:8000/docs
 
 ================================================================
